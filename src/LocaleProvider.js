@@ -21,7 +21,7 @@ export default class LocaleProvider extends React.Component {
 
     static childContextTypes = {
         locale: PropTypes.string,
-        getString: PropTypes.func,
+        getStringFromDictionary: PropTypes.func,
     };
 
     constructor(props, context) {
@@ -29,14 +29,16 @@ export default class LocaleProvider extends React.Component {
 
         this.state = {
             locale: props.locale,
-            getString: getString(props.dictionary),
+            getStringFromDictionary: getString(props.dictionary),
         };
     }
 
     getChildContext() {
+        const { locale, getStringFromDictionary } = this.state;
+
         return {
-            locale: this.state.locale,
-            getString: this.state.getString,
+            locale: locale,
+            getStringFromDictionary: getStringFromDictionary,
         };
     }
 
@@ -51,7 +53,7 @@ export default class LocaleProvider extends React.Component {
         // check if dictionary has been changed
         if (nextProps.dictionary !== this.props.dictionary) {
             this.setState({
-                getString: getString(nextProps.dictionary),
+                getStringFromDictionary: getString(nextProps.dictionary),
             });
         }
     }

@@ -24,16 +24,17 @@ export const i18n = screenKey => component => {
         static componentName = `Localized(${getComponentDisplayName(WrappedComponent)})`;
 
         static contextTypes = {
-            theme: PropTypes.string
+            locale: PropTypes.string,
+            getStringFromDictionary: PropTypes.func,
         };
 
         render() {
-            const { locale, getString } = this.context;
+            const { locale, getStringFromDictionary } = this.context;
 
             const props = {
                 ...this.props,
                 locale: locale,
-                t: getString(locale)(screenKey),
+                t: getStringFromDictionary(locale)(screenKey),
             };
 
             return <WrappedComponent {...props} />;
