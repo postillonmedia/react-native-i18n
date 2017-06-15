@@ -4,6 +4,8 @@
 
 import React, { Component, PropTypes } from 'react';
 
+import { getString } from './helpers';
+
 export const i18n = screenKey => component => {
     const getComponentDisplayName = (WrappedComponent) => {
         return WrappedComponent.displayName || WrappedComponent.name || componentName;
@@ -17,7 +19,7 @@ export const i18n = screenKey => component => {
 
             this.state = {
                 locale: locale.getLocale(),
-                getStringFromDictionary: locale.getStringFromDictionary(),
+                dictionary: locale.getDictionary(),
             };
 
             this.unsubscribe = locale.subscribe((state) => {
@@ -32,13 +34,19 @@ export const i18n = screenKey => component => {
             locale: PropTypes.object,
         };
 
+        componentWillUnmount() {
+            if (this.unsubscribe) {
+                this.unsubscribe();
+            }
+        }
+
         render() {
-            const { locale, getStringFromDictionary } = this.state;
+            const { locale, dictionary } = this.state;
 
             const props = {
                 ...this.props,
-                locale: locale,
-                t: getStringFromDictionary(locale)(screenKey),
+                locale,
+                t: getString(dictionary)(locale)(screenKey),
             };
 
             return <WrappedComponent {...props} />;

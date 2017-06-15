@@ -6,11 +6,11 @@ import Subscription from './utils/Subscription';
 
 export class LocaleSubscription extends Subscription {
 
-    constructor(locale, getStringFromDictionary) {
+    constructor(locale, dictionary) {
         super();
 
         this.locale = locale;
-        this.getStringFromDictionary = getStringFromDictionary;
+        this.dictionary = dictionary;
     }
 
     getLocale() {
@@ -25,15 +25,15 @@ export class LocaleSubscription extends Subscription {
         });
     }
 
-    getStringFromDictionary() {
-        return this.getStringFromDictionary;
+    getDictionary() {
+        return this.dictionary;
     }
 
-    setStringFromDictionary(getStringFromDictionary) {
-        this.getStringFromDictionary = getStringFromDictionary;
+    setDictionary(dictionary) {
+        this.dictionary = dictionary;
 
         this.notify({
-            getStringFromDictionary,
+            dictionary,
         });
     }
 

@@ -4,7 +4,6 @@
 
 import React, { Children, PropTypes } from 'react';
 
-import { getString } from './helpers';
 import LocaleSubscription from './LocaleSubscription';
 
 export default class LocaleProvider extends React.Component {
@@ -29,7 +28,7 @@ export default class LocaleProvider extends React.Component {
 
         const { locale, dictionary } = props;
 
-        this.subscription = new LocaleSubscription(locale, getString(dictionary));
+        this.subscription = new LocaleSubscription(locale, dictionary);
     }
 
     getChildContext() {
@@ -46,7 +45,7 @@ export default class LocaleProvider extends React.Component {
 
         // check if dictionary has been changed
         if (nextProps.dictionary !== this.props.dictionary) {
-            this.subscription.setStringFromDictionary(getString(nextProps.dictionary));
+            this.subscription.setDictionary(nextProps.dictionary);
         }
     }
 
