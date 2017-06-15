@@ -19,6 +19,7 @@
   "license": "MIT",
   "homepage": "https://bitbucket.org/szynka/react-native-i18n#readme",
   "devDependencies": {
+    "prop-types": "^15.5.10",
     "react": "^15.5.4"
   },
   "dependencies": {

@@ -2,11 +2,12 @@
  * Created by DanielL on 12.06.2017.
  */
 
-import React, { Children, PropTypes } from 'react';
+import React, { Children, Component } from 'react';
+import PropTypes from 'prop-types';
 
 import LocaleSubscription from './LocaleSubscription';
 
-export default class LocaleProvider extends React.Component {
+export default class LocaleProvider extends Component {
 
     static propTypes = {
         children: PropTypes.element.isRequired,
