@@ -29,7 +29,7 @@ export class Subscription {
 
             if (this.next === this.current) this.next = this.current.slice();
             this.next.splice(this.next.indexOf(listener), 1);
-        };
+        }.bind(this);
     }
 
     clear() {
