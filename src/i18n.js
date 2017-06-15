@@ -10,26 +10,30 @@ export const i18n = screenKey => component => {
     };
 
     const LocalizeComponent = WrappedComponent => class extends Component {
-        constructor() {
-            super();
+        constructor(props, context) {
+            super(props, context);
 
-            if (!WrappedComponent.contextTypes) {
-                WrappedComponent.contextTypes = {};
-            }
-            WrappedComponent.contextTypes.locale = PropTypes.string;
-            WrappedComponent.contextTypes.dictionary = PropTypes.object;
+            const { locale } = context;
+
+            this.state = {
+                locale: locale.getLocale(),
+                getStringFromDictionary: locale.getStringFromDictionary(),
+            };
+
+            this.unsubscribe = locale.subscribe((state) => {
+                this.setState(state);
+            });
         }
 
         static displayName = `Localized(${getComponentDisplayName(WrappedComponent)})`;
         static componentName = `Localized(${getComponentDisplayName(WrappedComponent)})`;
 
         static contextTypes = {
-            locale: PropTypes.string,
-            getStringFromDictionary: PropTypes.func,
+            locale: PropTypes.object,
         };
 
         render() {
-            const { locale, getStringFromDictionary } = this.context;
+            const { locale, getStringFromDictionary } = this.state;
 
             const props = {
                 ...this.props,

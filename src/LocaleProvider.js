@@ -5,6 +5,7 @@
 import React, { Children, PropTypes } from 'react';
 
 import { getString } from './helpers';
+import LocaleSubscription from './LocaleSubscription';
 
 export default class LocaleProvider extends React.Component {
 
@@ -20,41 +21,32 @@ export default class LocaleProvider extends React.Component {
     };
 
     static childContextTypes = {
-        locale: PropTypes.string,
-        getStringFromDictionary: PropTypes.func,
+        locale: PropTypes.object,
     };
 
     constructor(props, context) {
         super(props, context);
 
-        this.state = {
-            locale: props.locale,
-            getStringFromDictionary: getString(props.dictionary),
-        };
+        const { locale, dictionary } = props;
+
+        this.subscription = new LocaleSubscription(locale, getString(dictionary));
     }
 
     getChildContext() {
-        const { locale, getStringFromDictionary } = this.state;
-
         return {
-            locale: locale,
-            getStringFromDictionary: getStringFromDictionary,
+            locale: this.subscription,
         };
     }
 
     componentWillReceiveProps(nextProps) {
         // check if locale has been changed
         if (nextProps.locale !== this.props.locale) {
-            this.setState({
-                locale: nextProps.locale,
-            });
+            this.subscription.setLocale(nextProps.locale);
         }
 
         // check if dictionary has been changed
         if (nextProps.dictionary !== this.props.dictionary) {
-            this.setState({
-                getStringFromDictionary: getString(nextProps.dictionary),
-            });
+            this.subscription.setStringFromDictionary(getString(nextProps.dictionary));
         }
     }
 
