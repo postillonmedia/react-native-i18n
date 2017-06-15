@@ -2,7 +2,7 @@
  * Created by DanielL on 12.06.2017.
  */
 
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { getString } from './helpers';
