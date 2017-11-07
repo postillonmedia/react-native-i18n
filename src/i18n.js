@@ -41,7 +41,7 @@ export const i18n = (screenKey, customOptions = {}) => component => {
                     const dictionary = state.dictionary || this.state.dictionary;
                     const t = getString(dictionary)(locale)(screenKey);
 
-                    callback(locale, t);
+                    callback(locale, t, this.props);
                 }
             });
         }
