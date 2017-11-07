@@ -7,7 +7,16 @@ import PropTypes from 'prop-types';
 
 import { getString } from './helpers';
 
-export const i18n = screenKey => component => {
+const defaultOptions = {
+    localePropsName: 'locale',
+    translatePropsName: 't',
+    callback: undefined,
+};
+
+export const i18n = (screenKey, customOptions = {}) => component => {
+
+    const options = Object.assign({}, defaultOptions, customOptions);
+
     const getComponentDisplayName = (WrappedComponent) => {
         return WrappedComponent.displayName || WrappedComponent.name || componentName;
     };
@@ -17,6 +26,7 @@ export const i18n = screenKey => component => {
             super(props, context);
 
             const { locale } = context;
+            const { callback } = options;
 
             this.state = {
                 locale: locale.getLocale(),
@@ -25,6 +35,14 @@ export const i18n = screenKey => component => {
 
             this.unsubscribe = locale.subscribe((state) => {
                 this.setState(state);
+
+                if (typeof callback === 'function') {
+                    const locale = state.locale || this.state.locale;
+                    const dictionary = state.dictionary || this.state.dictionary;
+                    const t = getString(dictionary)(locale)(screenKey);
+
+                    callback(locale, t);
+                }
             });
         }
 
@@ -46,8 +64,8 @@ export const i18n = screenKey => component => {
 
             const props = {
                 ...this.props,
-                locale,
-                t: getString(dictionary)(locale)(screenKey),
+                [options.localePropsName]: locale,
+                [options.translatePropsName]: getString(dictionary)(locale)(screenKey),
             };
 
             return <WrappedComponent {...props} />;
