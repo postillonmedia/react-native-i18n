@@ -2,10 +2,12 @@
  * Created by DanielL on 12.06.2017.
  */
 
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import hoistStatics from 'hoist-non-react-statics';
 
 import { getString } from './helpers';
+
 
 export const i18n = screenKey => component => {
     const getComponentDisplayName = (WrappedComponent) => {
@@ -54,7 +56,7 @@ export const i18n = screenKey => component => {
         }
     };
 
-    return LocalizeComponent(component);
+    return hoistStatics(LocalizeComponent(component), component);
 };
 
 export default i18n;
