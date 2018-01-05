@@ -3,7 +3,7 @@
  */
 
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import hoistStatics from 'hoist-non-react-statics';
 
 import { getString } from './helpers';
@@ -23,7 +23,7 @@ export const i18n = (screenKey, customOptions = {}) => component => {
         return WrappedComponent.displayName || WrappedComponent.name || componentName;
     };
 
-    const LocalizeComponent = WrappedComponent => class extends Component {
+    const LocalizeComponent = WrappedComponent => class extends PureComponent {
         constructor(props, context) {
             super(props, context);
 
