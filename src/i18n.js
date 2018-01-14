@@ -38,10 +38,10 @@ export const i18n = (screenKey, customOptions = {}) => component => {
             this.unsubscribe = locale.subscribe((state) => {
                 this.setState(state);
 
-                const locale = this.state.locale;
+                const prevLocale = this.state.locale;
                 const nextLocale = state.locale;
 
-                if (callback && typeof callback === 'function' && locale !== nextLocale) {
+                if (callback && typeof callback === 'function' && prevLocale !== nextLocale) {
                     const locale = state.locale || this.state.locale;
                     const dictionary = state.dictionary || this.state.dictionary;
                     const t = getString(dictionary)(locale)(screenKey);
