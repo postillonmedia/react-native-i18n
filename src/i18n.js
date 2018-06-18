@@ -24,6 +24,16 @@ export const i18n = (screenKey, customOptions = {}) => component => {
     };
 
     const LocalizeComponent = WrappedComponent => class extends PureComponent {
+
+        static displayName = `Localized(${getComponentDisplayName(WrappedComponent)})`;
+        static componentName = `Localized(${getComponentDisplayName(WrappedComponent)})`;
+
+        static contextTypes = {
+            locale: PropTypes.object,
+        };
+
+        mounted = null;
+
         constructor(props, context) {
             super(props, context);
 
@@ -39,30 +49,31 @@ export const i18n = (screenKey, customOptions = {}) => component => {
                 const prevLocale = this.state.locale;
                 const nextLocale = state.locale;
 
-                this.setState(state);
+                if (this.mounted) {
+                    this.setState(state);
 
-                try {
-                    if (callback && typeof callback === 'function' && prevLocale !== nextLocale) {
-                        const locale = state.locale || this.state.locale;
-                        const dictionary = state.dictionary || this.state.dictionary;
-                        const t = getString(dictionary)(locale)(screenKey);
+                    try {
+                        if (callback && typeof callback === 'function' && prevLocale !== nextLocale) {
+                            const locale = state.locale || this.state.locale;
+                            const dictionary = state.dictionary || this.state.dictionary;
+                            const t = getString(dictionary)(locale)(screenKey);
 
-                        callback(locale, t, this.props);
+                            callback(locale, t, this.props);
+                        }
+                    } catch (e) {
+                        console.error(e)
                     }
-                } catch (e) {
-                    console.error(e)
                 }
             });
         }
 
-        static displayName = `Localized(${getComponentDisplayName(WrappedComponent)})`;
-        static componentName = `Localized(${getComponentDisplayName(WrappedComponent)})`;
-
-        static contextTypes = {
-            locale: PropTypes.object,
-        };
+        componentDidMount() {
+            this.mounted = true;
+        }
 
         componentWillUnmount() {
+            this.mounted = false;
+
             if (this.unsubscribe) {
                 this.unsubscribe();
             }
