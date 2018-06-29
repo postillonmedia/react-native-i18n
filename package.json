@@ -1,6 +1,6 @@
 {
   "name": "@postillon/react-native-i18n",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "i18n for react-native",
   "main": "index.js",
   "private": false,

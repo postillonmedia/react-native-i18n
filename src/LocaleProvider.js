@@ -10,7 +10,10 @@ import LocaleSubscription from './LocaleSubscription';
 export default class LocaleProvider extends Component {
 
     static propTypes = {
-        children: PropTypes.element.isRequired,
+        children: PropTypes.oneOfType([
+            PropTypes.element,
+            PropTypes.arrayOf(PropTypes.element),
+        ]),
         locale: PropTypes.string.isRequired,
         dictionary: PropTypes.object.isRequired,
     };
