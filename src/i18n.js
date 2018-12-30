@@ -6,6 +6,8 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import hoistStatics from 'hoist-non-react-statics';
 
+import LocaleContext from './Context';
+
 import { getString } from './helpers';
 
 
@@ -28,65 +30,58 @@ export const i18n = (screenKey, customOptions = {}) => component => {
         static displayName = `Localized(${getComponentDisplayName(WrappedComponent)})`;
         static componentName = `Localized(${getComponentDisplayName(WrappedComponent)})`;
 
-        static contextTypes = {
-            locale: PropTypes.object,
-        };
+        static contextType = LocaleContext;
 
         mounted = null;
 
         constructor(props, context) {
             super(props, context);
 
-            const { locale } = context;
-            const { callback } = options;
-
-            this.state = {
-                locale: locale.getLocale(),
-                dictionary: locale.getDictionary(),
-            };
-
-            this.unsubscribe = locale.subscribe((state) => {
-                const prevLocale = this.state.locale;
-                const nextLocale = state.locale;
-
-                if (this.mounted) {
-                    this.setState(state);
-
-                    try {
-                        if (callback && typeof callback === 'function' && prevLocale !== nextLocale) {
-                            const locale = state.locale || this.state.locale;
-                            const dictionary = state.dictionary || this.state.dictionary;
-                            const t = getString(dictionary)(locale)(screenKey);
-
-                            callback(locale, t, this.props);
-                        }
-                    } catch (e) {
-                        console.error(e)
-                    }
-                }
-            });
-        }
-
-        componentDidMount() {
-            this.mounted = true;
-        }
-
-        componentWillUnmount() {
-            this.mounted = false;
-
-            if (this.unsubscribe) {
-                this.unsubscribe();
-            }
+            // const { locale } = context;
+            // const { callback } = options;
+            //
+            // this.state = {
+            //     locale: locale.getLocale(),
+            //     dictionary: locale.getDictionary(),
+            // };
+            //
+            // this.unsubscribe = locale.subscribe((state) => {
+            //     const prevLocale = this.state.locale;
+            //     const nextLocale = state.locale;
+            //
+            //     if (this.mounted) {
+            //         this.setState(state);
+            //
+            //         try {
+            //             if (callback && typeof callback === 'function' && prevLocale !== nextLocale) {
+            //                 const locale = state.locale || this.state.locale;
+            //                 const dictionary = state.dictionary || this.state.dictionary;
+            //                 const t = getString(dictionary)(locale)(screenKey);
+            //
+            //                 callback(locale, t, this.props);
+            //             }
+            //         } catch (e) {
+            //             console.error(e)
+            //         }
+            //     }
+            // });
         }
 
         render() {
-            const { locale, dictionary } = this.state;
+            const { callback } = options;
+            const { locale, dictionary } = this.context;
+
+            const translate = getString(dictionary)(locale)(screenKey);
 
             const props = {
                 ...this.props,
                 [options.localePropsName]: locale,
-                [options.translatePropsName]: getString(dictionary)(locale)(screenKey),
+                [options.translatePropsName]: translate,
             };
+
+            if (callback && typeof callback === 'function') {
+                callback(locale, translate, this.props);
+            }
 
             return <WrappedComponent {...props} />;
         }

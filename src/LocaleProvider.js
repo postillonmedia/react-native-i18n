@@ -2,12 +2,12 @@
  * Created by DanielL on 12.06.2017.
  */
 
-import React, { Children, Component } from 'react';
+import React, { Children, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
-import LocaleSubscription from './LocaleSubscription';
+import LocaleContext from './Context';
 
-export default class LocaleProvider extends Component {
+export default class LocaleProvider extends PureComponent {
 
     static propTypes = {
         children: PropTypes.oneOfType([
@@ -23,10 +23,6 @@ export default class LocaleProvider extends Component {
         dictionary: {},
     };
 
-    static childContextTypes = {
-        locale: PropTypes.object,
-    };
-
     constructor(props, context) {
         super(props, context);
 
@@ -35,28 +31,14 @@ export default class LocaleProvider extends Component {
         this.subscription = new LocaleSubscription(locale, dictionary);
     }
 
-    getChildContext() {
-        return {
-            locale: this.subscription,
-        };
-    }
-
-    componentWillReceiveProps(nextProps) {
-        // check if locale has been changed
-        if (nextProps.locale !== this.props.locale) {
-            this.subscription.setLocale(nextProps.locale);
-        }
-
-        // check if dictionary has been changed
-        if (nextProps.dictionary !== this.props.dictionary) {
-            this.subscription.setDictionary(nextProps.dictionary);
-        }
-    }
-
     render() {
-        const { children } = this.props;
+        const { children, context: Context = LocaleContext, locale, dictionary } = this.props;
 
-        return Children.only(children);
+        return (
+            <Context.Provider value={{locale, dictionary}}>
+                {children}
+            </Context.Provider>
+        );
     }
 
 }
